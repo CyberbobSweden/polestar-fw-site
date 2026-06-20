@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Polestar 4 — Firmware</title>
+<style>
+  :root{
+    --bg:#0b0d10; --card:#15181d; --line:#262b33; --txt:#e8eaed;
+    --muted:#8b949e; --accent:#9fd0ff; --new:#ffb454; --ok:#7ee787;
+  }
+  *{box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+       background:var(--bg);color:var(--txt);margin:0;padding:1.5rem;
+       max-width:780px;margin-inline:auto;line-height:1.5}
+  header{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:.5rem}
+  h1{font-weight:600;letter-spacing:.03em;font-size:1.5rem;margin:.2rem 0}
+  .latest{background:var(--card);border:1px solid var(--line);border-radius:16px;
+          padding:1.4rem 1.6rem;margin:1.2rem 0}
+  .latest .num{font-size:2.4rem;font-weight:700;letter-spacing:.02em}
+  .latest .lbl{color:var(--muted);text-transform:uppercase;font-size:.72rem;letter-spacing:.12em}
+  .badge{display:inline-block;background:#1f6feb22;color:var(--accent);
+         border:1px solid #1f6feb55;border-radius:999px;padding:.15rem .7rem;font-size:.8rem;margin-top:.6rem}
+  details{background:var(--card);border:1px solid var(--line);border-radius:12px;
+          padding:.4rem 1rem;margin:.6rem 0}
+  details[open]{border-color:#33404f}
+  summary{cursor:pointer;font-weight:600;padding:.5rem 0;list-style:none;
+          display:flex;justify-content:space-between;align-items:center}
+  summary::-webkit-details-marker{display:none}
+  summary .v{font-size:1.1rem}
+  summary .seen{color:var(--muted);font-size:.78rem;font-weight:400}
+  ul{margin:.2rem 0 .8rem;padding-left:1.1rem}
+  li{margin:.25rem 0;color:#d2d7de}
+  footer{color:var(--muted);font-size:.8rem;margin-top:2rem;border-top:1px solid var(--line);padding-top:1rem}
+  a{color:var(--accent)}
+  .err{color:var(--new)}
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <div class="lbl" style="color:var(--muted);font-size:.72rem;letter-spacing:.12em">POLESTAR 4</div>
+      <h1>Firmware-uppdateringar</h1>
+    </div>
+    <button id="refresh" style="background:#1f6feb;color:#fff;border:0;border-radius:8px;padding:.5rem .9rem;cursor:pointer">Uppdatera</button>
+  </header>
+
+  <div class="latest" id="latest"><div class="lbl">Senaste version</div><div class="num">…</div></div>
+
+  <div id="list"></div>
+
+  <footer id="footer"></footer>
+
+<script>
+async function load(){
+  let data;
+  try{
+    const res = await fetch('./data.json?_=' + Date.now());
+    if(!res.ok) throw new Error('data.json saknas (' + res.status + ')');
+    data = await res.json();
+  }catch(e){
+    document.getElementById('latest').innerHTML =
+      '<div class="lbl">Fel</div><div class="err">Kunde inte läsa data.json — har GitHub Action kört än?</div>';
+    return;
+  }
+
+  const versions = data.versions || [];
+  const latest = data.latest || (versions[0] && versions[0].version) || '?';
+
+  document.getElementById('latest').innerHTML =
+    '<div class="lbl">Senaste version</div>' +
+    '<div class="num">' + latest + '</div>' +
+    '<span class="badge">' + versions.length + ' versioner spårade</span>';
+
+  document.getElementById('list').innerHTML = versions.map((v, i) => {
+    const seen = v.first_seen ? ('upptäckt ' + v.first_seen) : '';
+    const notes = (v.notes || []).map(n => '<li>' + escapeHtml(n) + '</li>').join('');
+    return '<details' + (i === 0 ? ' open' : '') + '>' +
+      '<summary><span class="v">' + escapeHtml(v.version) + '</span>' +
+      '<span class="seen">' + seen + '</span></summary>' +
+      (notes ? '<ul>' + notes + '</ul>' : '<p class="seen">Inga noteringar.</p>') +
+      '</details>';
+  }).join('');
+
+  const upd = data.updated_at ? new Date(data.updated_at).toLocaleString('sv-SE') : '?';
+  document.getElementById('footer').innerHTML =
+    'Senast hämtad: ' + upd + ' · Källa: <a href="' + (data.source || '#') +
+    '" target="_blank" rel="noopener">Polestars officiella release notes</a>';
+}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+document.getElementById('refresh').onclick = load;
+load();
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+name: Update Polestar 4 firmware data
+
+# Kör var 6:e timme + går att trigga manuellt från Actions-fliken
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installera beroenden
+        run: pip install httpx beautifulsoup4
+
+      - name: Hämta release notes
+        run: python scrape.py
+
+      - name: Committa om något ändrats
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if [ -n "$(git status --porcelain docs/data.json)" ]; then
+            git add docs/data.json
+            git commit -m "Uppdaterad firmware-data ($(date -u +%Y-%m-%d))"
+            git push
+          else
+            echo "Inga ändringar."
+          fi
