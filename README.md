@@ -4,19 +4,40 @@ En liten, gratis sida som visar vilka mjukvaruversioner Polestar släppt till
 Polestar 4, med ändringsloggar. Den hämtar Polestars **officiella** release
 notes automatiskt och kräver ingen server och ingen inloggning.
 
-**Så funkar det:** GitHub Actions kör `scrape.py` var 6:e timme → sparar
-`docs/data.json` → den statiska sidan `docs/index.html` visar datan. Allt körs
-på GitHubs infrastruktur, helt gratis.
+**Så funkar det:** GitHub Actions kör `scrape_api.py` var 6:e timme → läser
+Volvo/Polestars in-car content-API (samma JSON som matar bilens "Software
+updates"-skärm) → sparar `docs/data.json` → den statiska sidan visar datan.
+Ingen server, ingen inloggning.
+
+> Den här källan ligger **före** den publika manualsidan — den visade 4.2.14
+> medan webbsidan fortfarande toppade på 4.2.11.
 
 ```
 repo/
-├─ scrape.py                  # hämtar + tolkar release notes
+├─ scrape_api.py             # läser in-car JSON-API:t (primär)
+├─ scrape.py                 # äldre HTML-skrapa (reserv)
 ├─ requirements.txt
 ├─ docs/
-│  ├─ index.html              # själva sidan (GitHub Pages servar denna)
-│  └─ data.json               # genereras av scrapern
+│  ├─ index.html             # själva sidan (GitHub Pages servar denna)
+│  └─ data.json              # genereras av scrapern
 └─ .github/workflows/update.yml   # schemalägger scrapern
 ```
+
+### Om API-URL:en
+
+Endpointen ser ut så här:
+```
+https://incar.volvocars.com/api/in-car-support-content/next/polestar/assets/content/814/UNTIL/26160/en-GB/<hash>.json
+```
+- `814` = modellkod (Polestar 4)
+- `UNTIL/26160` = CMS-innehållsversion (ökar för varje release)
+- `<hash>` = innehållets hash (byts för varje release)
+- `en-GB` = språk (byt mot `sv-SE` för svenska)
+
+Både UNTIL-numret och hashen ändras när Polestar publicerar en ny version.
+`scrape_api.py` försöker därför först **upptäcka aktuell URL** automatiskt ur
+den publika manualsidans källkod (`discover_url()`), och faller annars tillbaka
+på URL:en i `DEFAULT_URL`. Vill du låsa en URL: sätt miljövariabeln `INCAR_URL`.
 
 ## Testa lokalt först (valfritt)
 
@@ -77,4 +98,3 @@ ev. PKCE-auth) — fungerar den inte direkt går flott-sidan ändå.
 ---
 Datan kommer från Polestars officiella manual. Detta projekt är inte anslutet
 till Polestar.
-"# polestar-fw-site" 

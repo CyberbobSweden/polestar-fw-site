@@ -1,8 +1,25 @@
 {
-  "source": "https://www.polestar.com/us/manual/polestar-4/2025/software-updates/",
-  "updated_at": "2026-06-20T11:24:36+00:00",
-  "latest": "P4.2.11",
+  "source": "https://incar.volvocars.com/api/in-car-support-content/next/polestar/assets/content/814/UNTIL/26160/en-GB/9a8324b083b45de341e8b1f7dc762135.json",
+  "latest": "4.2.14",
+  "updated_at": "2026-06-20T11:50:34+00:00",
   "versions": [
+    {
+      "version": "P4.2.14",
+      "num": [
+        4,
+        2,
+        14
+      ],
+      "cms": 26160,
+      "notes": [
+        "The Creep drive setting is now saved to corresponding driver profiles",
+        "Improvements to the automatic resume of stop & go when using Pilot Assist or Adaptive Cruise Control",
+        "Improvements to the Park Assist, including an audible warning starting at 100 cm distance to objects",
+        "Previously, the audible sensor warning was started at 130 cm",
+        "Improvements to Road Sign Information, including a bug fix to prevent reading signs on nearby railways"
+      ],
+      "first_seen": "2026-06-20"
+    },
     {
       "version": "P4.2.11",
       "num": [
@@ -10,24 +27,9 @@
         2,
         11
       ],
+      "cms": 26120,
       "notes": [
-        "This software update provides general improvements and compatibility updates. It includes the software content released in all previous updates."
-      ],
-      "first_seen": "2026-06-20"
-    },
-    {
-      "version": "P4.2.10",
-      "num": [
-        4,
-        2,
-        10
-      ],
-      "notes": [
-        "Improvements to battery preconditioning, including the system now acting more dynamically",
-        "To start the preconditioning, a DC fast charger must be set as the destination",
-        "Improvements to the climate system, including a bug fix for sporadically blowing cold air",
-        "ADAS improvements",
-        "Improvements to Road Sign Information"
+        "This software update provides general improvements and compatibility updates."
       ],
       "first_seen": "2026-06-20"
     },
@@ -38,37 +40,23 @@
         2,
         9
       ],
+      "cms": 25510,
       "notes": [
         "Audible confirmation when locking the vehicle is introduced",
-        "Rear auto brake for static objects during parking maneuvers is introduced",
-        "Bug fixes",
         "Bug fix for when the steering wheel heating didn't start in colder climates"
       ],
       "first_seen": "2026-06-20"
     },
     {
-      "version": "4.1.11",
+      "version": "4.1.9",
       "num": [
         4,
         1,
-        11
+        9
       ],
+      "cms": 24310,
       "notes": [
-        "Calibration of regenerative braking.",
         "General stability improvements."
-      ],
-      "first_seen": "2026-06-20"
-    },
-    {
-      "version": "Polestar OS4.1.7",
-      "num": [
-        4,
-        1,
-        7
-      ],
-      "notes": [
-        "Introduction of Digital Key",
-        "Stability improvements to voice assistant."
       ],
       "first_seen": "2026-06-20"
     }

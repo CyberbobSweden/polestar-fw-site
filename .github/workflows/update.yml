@@ -20,10 +20,10 @@ jobs:
           python-version: "3.12"
 
       - name: Installera beroenden
-        run: pip install httpx beautifulsoup4
+        run: pip install httpx
 
-      - name: Hämta release notes
-        run: python scrape.py
+      - name: Hämta release notes (JSON-API)
+        run: python scrape_api.py
 
       - name: Committa om något ändrats
         run: |
